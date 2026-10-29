@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wordbound: The Lost Kingdom</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,700&family=Figtree:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#0b1d2e;--bg2:#12405a;--card:#14364b;--line:#2b5f76;--ink:#eef3f1;--mut:#a3bec2;--gold:#f2b84b;--teal:#3fc1b0;--bad:#ff9b8c;color-scheme:dark;box-sizing:border-box;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(120% 70% at 50% 0,var(--bg2),var(--bg) 70%) fixed;color:var(--ink);font:16px/1.5 Figtree,system-ui,sans-serif}
+#app{max-width:720px;margin:0 auto;padding:14px 16px 40px}
+h1,h2,h3{font-family:Literata,Georgia,serif;line-height:1.25;margin:0 0 8px}h1{font-size:1.7rem}h2{font-size:1.25rem}h3{font-size:1.05rem}
+p{margin:0 0 10px}.mut{color:var(--mut);font-size:.92rem}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.lv{background:var(--gold);color:#2a1d05;border-radius:99px;padding:2px 12px;font-weight:800;white-space:nowrap}
+.xp{flex:1;height:10px;background:#0a2536;border-radius:9px;overflow:hidden;border:1px solid var(--line)}.xp i{display:block;height:100%;background:var(--teal);transition:width .4s}
+.gd{font-weight:800;color:var(--gold);white-space:nowrap}
+nav{display:flex;gap:6px;margin-bottom:14px}nav button{flex:1;padding:10px 4px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);font:600 .95rem Figtree,sans-serif;cursor:pointer}
+nav button[aria-current=page]{background:var(--card);border-color:var(--gold);color:var(--gold)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.btn{display:inline-block;border:0;border-radius:10px;padding:11px 18px;font:800 1rem Figtree,sans-serif;cursor:pointer;background:var(--gold);color:#2a1d05;margin:4px 6px 4px 0}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.bar{height:10px;background:#0a2536;border-radius:9px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--gold)}
+.scroll{background:#f3e6c8;color:#2a2118;border-radius:6px;padding:18px 20px;margin-bottom:14px;font:1.05rem/1.75 Literata,Georgia,serif;box-shadow:0 0 0 3px #c9a35a inset}
+.scroll mark{background:#ffd36b;padding:0 2px;border-bottom:2px solid #b8761a}
+.ch{display:block;width:100%;text-align:left;margin:0 0 8px;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:#0f2c40;color:var(--ink);font:600 1rem Figtree,sans-serif;cursor:pointer}
+.ch:hover:not(:disabled){border-color:var(--gold)}.ch:disabled{cursor:default}.ch.hid{opacity:.35;text-decoration:line-through}
+.ch.ok{border-color:var(--teal);background:#0f4a47}.ch.no{border-color:var(--bad);background:#4a2530}
+.fb{border-left:5px solid var(--teal);background:#0f3a40;padding:12px 14px;border-radius:8px;margin:10px 0}.fb.no{border-color:var(--bad);background:#40222c}
+.node{display:flex;gap:12px;align-items:center;width:100%;text-align:left;color:var(--ink);font:inherit;cursor:pointer}
+.node .ic{font-size:1.8rem;width:46px;height:46px;display:grid;place-items:center;background:#0a2536;border-radius:50%;border:2px solid var(--gold);flex:none}
+.node.lock{opacity:.5;cursor:not-allowed}.node.lock .ic{border-color:var(--line)}
+.camp{display:flex;flex-wrap:wrap;gap:10px;font-size:2rem;background:linear-gradient(#0a2536,#14364b);border-radius:10px;padding:14px;min-height:70px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+.tag{font-size:.8rem;border:1px solid var(--line);border-radius:99px;padding:1px 9px;color:var(--mut)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><div id="app"></div>
+<script>
+const D=[
+{id:'gate',t:'The Village Gate',ic:'🚪',d:'easy',min:3,sk:'Finding details',v:[],
+p:`<b>WELCOME TO ASHFORD</b><br>The gate opens at 7 a.m. and closes at 6 p.m. Visitors must sign the book at the gate. Horses stay outside the walls. The market is open on Tuesdays and Fridays. Lost something? Ask Mr. Ben at the well.`,
+qs:[{q:`When does the gate close?`,c:[`7 a.m.`,`6 p.m.`,`Tuesday`,`Friday`],a:1,ev:`closes at 6 p.m.`,e:`The notice says the gate closes at 6 p.m. The time 7 a.m. is when it opens.`},
+{q:`What must visitors do?`,c:[`Leave their horses inside`,`Sign the book`,`Ask Mr. Ben`,`Pay gold`],a:1,ev:`must sign the book`,e:`Visitors must sign the book at the gate. Horses stay outside, and Mr. Ben helps only with lost things.`},
+{q:`Where can you ask about a lost thing?`,c:[`At the market`,`At the gate`,`At the well`,`At the walls`],a:2,ev:`Ask Mr. Ben at the well.`,e:`The notice sends people with lost things to Mr. Ben at the well.`}]},
+{id:'baker',t:`The Baker’s Note`,ic:'🍞',d:'easy',min:3,sk:'Practical reading',v:[],
+p:`Tom,<br>I am at the market until noon. Please do this: first, put the bread in the oven at nine. Then, take it out after thirty minutes. Do not open the shop before ten. If Mrs. Pike comes, give her the small loaf. She has paid already.<br>– Rosa`,
+qs:[{q:`What should Tom do first?`,c:[`Open the shop`,`Put the bread in the oven`,`Take out the bread`,`Go to the market`],a:1,ev:`first, put the bread in the oven at nine`,e:`Rosa writes “first” before the oven step, so that is the first job.`},
+{q:`When can Tom open the shop?`,c:[`Before nine`,`At ten or later`,`At noon only`,`After thirty minutes`],a:1,ev:`Do not open the shop before ten.`,e:`“Not before ten” means ten o’clock or later is allowed.`},
+{q:`Does Mrs. Pike need to pay?`,c:[`Yes, with gold`,`Yes, at noon`,`No, she already paid`,`We cannot know`],a:2,ev:`She has paid already.`,e:`“Has paid already” means the payment is finished.`}]},
+{id:'package',t:'The Missing Package',ic:'📦',d:'easy',min:3,sk:'Inference',v:[['collected','took something away']],
+p:`Lina left a package at the front desk at 8:15 a.m. When she returned at noon, the receptionist said a delivery driver had collected it at 10:30 a.m. Lina had not arranged a delivery. The security log showed that the driver used an identification card belonging to another person.`,
+qs:[{q:`What time did the driver collect the package?`,c:[`8:15 a.m.`,`10:30 a.m.`,`Noon`,`We cannot know`],a:1,ev:`collected it at 10:30 a.m.`,e:`8:15 is when Lina left it, and noon is when she came back. The driver came at 10:30.`},
+{q:`What can Lina reasonably conclude?`,c:[`The receptionist delivered the package herself.`,`Someone may have collected the package using false identification.`,`Lina forgot to arrange a delivery.`,`The delivery driver arrived after noon.`],a:1,ev:`identification card belonging to another person`,e:`The log says the driver used another person’s ID card, so the collection may have been unauthorized. The passage does not prove who took the package.`},
+{q:`In the passage, “collected” means…`,c:[`took away`,`cleaned`,`counted`,`painted`],a:0,s:'Vocabulary in context',ev:`had collected it`,e:`The driver came and took the package away, so “collected” means took away.`}]},
+{id:'market',t:'Market Day',ic:'🍎',d:'medium',min:4,sk:'Vocabulary in context',v:[['exhausted','very tired'],['bargain','a good price']],
+p:`The market was crowded and noisy. Mira was exhausted after walking all morning, so she sat on a barrel to rest. A merchant offered her a bargain: two apples for the price of one. “Take them,” he said. “They are fresh. I picked them an hour ago.” Mira smiled. She had very little money, so the cheap price made her happy.`,
+qs:[{q:`“Exhausted” means…`,c:[`very tired`,`very hungry`,`very angry`,`very rich`],a:0,ev:`exhausted after walking all morning, so she sat on a barrel to rest`,e:`She walked all morning and then sat down to rest, so she was very tired.`},
+{q:`“Bargain” means…`,c:[`a lie`,`a good price`,`a gift from a friend`,`a heavy bag`],a:1,ev:`two apples for the price of one`,e:`Two apples for the price of one is a good price, which is what a bargain is.`},
+{q:`Why was Mira happy?`,c:[`The apples were free.`,`She had a lot of money.`,`The price was low and she had little money.`,`The merchant was her friend.`],a:2,s:'Inference',ev:`very little money, so the cheap price made her happy`,e:`The text says she had very little money and the cheap price made her happy. The apples were cheap, not free.`}]},
+{id:'door',t:'The Locked Library Door',ic:'🗝️',d:'hard',min:5,sk:'Integrated comprehension',v:[['dawn','the first light of the morning']],
+p:`<b>Clue 1 (old letter):</b> The key is not in the tower. Look where the water sings, but only at dawn.<br><br><b>Clue 2 (the guard):</b> I saw the old man at the fountain before sunrise. He had a small iron key, but he left it under a stone when he heard me.<br><br><b>Clue 3 (map note):</b> The fountain is behind the church. The stone is the one with a star.`,
+qs:[{q:`Where does “the water sings” most likely point?`,c:[`The tower`,`The fountain`,`The church bell`,`The library`],a:1,ev:`Look where the water sings`,e:`The letter rules out the tower. The guard saw the old man with the key at the fountain, and fountains have water.`},
+{q:`Where is the key now, according to the guard?`,c:[`In the tower`,`With the old man`,`Under a stone`,`Inside the church`],a:2,ev:`he left it under a stone`,e:`The guard says the old man left the key under a stone.`},
+{q:`Which stone should you check?`,c:[`The one with a star`,`The biggest one`,`The one in the tower`,`The one at the gate`],a:0,ev:`The stone is the one with a star.`,e:`Clue 3 combines with Clue 2: the key is under a stone, and the stone has a star.`},
+{q:`When must you look for the key?`,c:[`At noon`,`At dawn`,`At night`,`On Fridays`],a:1,ev:`but only at dawn`,e:`The letter says to look “only at dawn”.`}]}];
+const R={easy:[20,30],medium:[40,50],hard:[70,80]};
+const SH=[['lantern','🏮','Camp lantern',100],['scarf','🧣','Traveller’s scarf',100],['map','🗺️','Old village map',100],['owl','🦉','Owl companion',250],['quill','🏆','Golden quill trophy',300],['crown','👑','Lost king’s crown',500]];
+const K='wordbound-v1';let S={};try{S=JSON.parse(localStorage.getItem(K))||{}}catch(e){}
+S=Object.assign({xp:0,gold:0,done:{},paid:{},own:[],mist:[],vocab:[],sk:{},day:'',dn:0,dg:0},S);
+const td=new Date().toDateString();if(S.day!==td){S.day=td;S.dn=0;S.dg=0}
+const sv=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const lv=()=>1+Math.floor(S.xp/100),$=document.getElementById('app'),L='ABCD';
+let tab='home',M=null,sel=null,pend=null;
+const find=id=>D.find(m=>m.id===id);
+const hdr=()=>`<header class="top"><span class="lv">Level ${lv()}</span><div class="xp" role="progressbar" aria-label="XP to next level" aria-valuenow="${S.xp%100}" aria-valuemax="100"><i style="width:${S.xp%100}%"></i></div><span class="gd">🪙 ${S.gold}</span></header>`;
+const nav=()=>`<nav>${[['home','Home'],['map','Map'],['vault','Vault'],['shop','Shop']].map(t=>`<button ${tab===t[0]?'aria-current="page"':''} onclick="tab='${t[0]}';sel=null;render()">${t[1]}</button>`).join('')}</nav>`;
+function home(){const nx=D.find(m=>!S.done[m.id]),n=D.filter(m=>S.done[m.id]).length,own=SH.filter(i=>S.own.includes(i[0]));
+return `<div class="card"><h1>The gate of Ashford is sealed.</h1><p>Read the clues. Understand the world. Earn your fortune. Rebuild the kingdom.</p>
+${nx?`<button class="btn" onclick="tab='map';sel='${nx.id}';render()">Continue: ${nx.t}</button>`:`<p><b>The Forgotten Village is open again.</b> Replay any mission from the map.</p>`}</div>
+<div class="card"><h3>Daily goal: finish 2 missions today</h3><div class="bar"><i style="width:${Math.min(S.dn,2)*50}%"></i></div><p class="mut">${Math.min(S.dn,2)}/2 done. ${S.dg?'Reward collected: 30 gold and 25 XP.':'Reward: 30 gold and 25 XP.'}</p></div>
+<div class="card"><h3>The Forgotten Village</h3><div class="bar"><i style="width:${n/D.length*100}%"></i></div><p class="mut">${n} of ${D.length} missions complete. Practice is always free, and you can stop whenever you like.</p></div>
+<div class="card"><h3>Your camp</h3><div class="camp" aria-label="Owned items">${own.length?own.map(i=>`<span title="${i[2]}">${i[1]}</span>`).join(''):`<span style="font-size:1rem;color:var(--mut)">Empty for now. Spend gold in the shop.</span>`}</div></div>`}
+function map(){return D.map((m,i)=>{const dn=S.done[m.id],lk=i>0&&!S.done[D[i-1].id],r=R[m.d];
+let h=`<div class="card"><button class="node ${lk?'lock':''}" ${lk?'disabled':`onclick="sel=sel==='${m.id}'?null:'${m.id}';render()"`} style="background:none;border:0;padding:0"><span class="ic">${lk?'🔒':m.ic}</span><span><b>${i+1}. ${m.t}</b><br><span class="mut">${m.d}, about ${m.min} min, ${m.sk}. Reward: ${r[0]} gold, ${r[1]} XP. ${dn?'✓ Complete':lk?'Locked: finish the mission before it':''}</span></span></button>`;
+if(sel===m.id&&!lk)h+=`<hr style="border:0;border-top:1px solid var(--line);margin:12px 0"><h3>Choose a mode</h3>
+<p><button class="btn alt" onclick="go('${m.id}','prac')">Practice</button><span class="mut">No gold. Half XP. Hints and explanations.</span></p>
+${S.paid[m.id]?'':`<p><button class="btn" onclick="go('${m.id}','adv')">Adventure</button><span class="mut">Full gold and XP. Mistakes cost your perfect bonus. Rewards are earned once per mission.</span></p>`}
+${dn&&S.gold>=30?`<p><button class="btn alt" onclick="go('${m.id}','hs')">High-stakes challenge: 30 gold</button><br><span class="mut">Entry fee: 30 gold. Answer every question correctly to win 90 gold. Otherwise you lose the 30 gold. Hints are off. Your balance never drops below zero.</span></p>`:''}`;
+return h+'</div>'}).join('')}
+function vault(){const ks=Object.keys(S.sk);return `<div class="card"><h3>Mistakes to review</h3><p class="mut">${S.mist.length?`${S.mist.length} question${S.mist.length>1?'s':''} waiting. Each corrected mistake earns 10 gold and 15 XP.`:'Nothing to review. Mistakes you make will appear here.'}</p>${S.mist.length?`<button class="btn" onclick="rv()">Review mistakes</button>`:''}</div>
+<div class="card"><h3>Skills</h3>${ks.length?ks.map(k=>{const s=S.sk[k],p=Math.round(s.c/s.t*100);return `<div><div class="row" style="border:0"><span>${k}${s.t>=3&&p>=80?' <b style="color:var(--gold)">★ Mastered</b>':''}</span><span class="mut">${s.c}/${s.t} correct</span></div><div class="bar"><i style="width:${p}%"></i></div></div>`}).join(''):'<p class="mut">Finish a mission to start tracking skills.</p>'}</div>
+<div class="card"><h3>Words you learned</h3>${S.vocab.length?S.vocab.map(v=>`<div class="row"><b>${v[0]}</b><span>${v[1]}</span></div>`).join(''):'<p class="mut">New words appear here after missions.</p>'}</div>
+<p><button class="btn alt" onclick="if(pend==='reset'){localStorage.removeItem(K);location.reload()}else{pend='reset';render()}">${pend==='reset'?'Confirm: erase all progress':'Reset progress'}</button></p>`}
+function shop(){return `<p class="mut">Cosmetics only. Items never change a question or its answer.</p>`+SH.map(i=>{const o=S.own.includes(i[0]);return `<div class="card row" style="align-items:center;border:1px solid var(--line)"><span style="font-size:1.8rem">${i[1]}</span><span style="flex:1"><b>${i[2]}</b><br><span class="mut">${i[3]} gold</span></span>${o?'<span class="tag">Owned ✓</span>':S.gold<i[3]?`<span class="mut">Need ${i[3]-S.gold} more gold</span>`:`<button class="btn" onclick="buy('${i[0]}')">${pend===i[0]?'Confirm purchase':'Buy'}</button>`}</div>`}).join('')}
+function buy(id){const i=SH.find(x=>x[0]===id);if(pend!==id){pend=id;return render()}if(S.gold>=i[3]){S.gold-=i[3];S.own.push(id);pend=null;sv()}render()}
+function go(id,mode){const m=find(id);if(mode==='hs')S.gold-=30;M={m,mode,it:m.qs.map((q,n)=>({m,q,k:id+':'+n})),i:0,w:0,h:0,pk:null,hid:[],log:[],right:0,lv0:lv()};sv();render()}
+function rv(){M={mode:'rev',rev:1,it:S.mist.map(k=>{const[a,b]=k.split(':'),m=find(a);return{m,q:m.qs[b],k}}),i:0,w:0,h:0,pk:null,hid:[],log:[],right:0,lv0:lv()};render()}
+function mission(){const x=M.it[M.i],q=x.q;let p=x.m.p;if(M.pk!==null&&q.ev)p=p.replace(q.ev,`<mark>${q.ev}</mark>`);
+const ok=M.pk===q.a,last=M.i===M.it.length-1;
+return `<p class="mut">${M.rev?'Reviewing mistakes':x.m.t} · Question ${M.i+1} of ${M.it.length}</p><div class="bar"><i style="width:${M.i/M.it.length*100}%"></i></div>
+<div class="scroll">${p}</div><h2>${q.q}</h2>
+${q.c.map((c,j)=>{let cl='',ic='';if(M.pk!==null){if(j===q.a){cl='ok';ic='✓ '}else if(j===M.pk){cl='no';ic='✗ '}}else if(M.hid.includes(j))cl='hid';
+return `<button class="ch ${cl}" ${M.pk!==null||M.hid.includes(j)?'disabled':''} onclick="pick(${j})">${ic}${L[j]}. ${c}</button>`}).join('')}
+${M.pk===null?`${M.mode==='hs'||M.hid.length?'':`<button class="btn alt" onclick="hint()">Hint: remove one wrong answer</button>`}`:`<div class="fb ${ok?'':'no'}" role="status"><b>${ok?'✓ Correct.':'✗ Not quite.'}</b> ${q.e}</div><button class="btn" data-f onclick="nxt()">${last?'See results':'Next question'}</button>`}
+<p><button class="btn alt" onclick="M=null;tab='map';render()">${M.mode==='hs'?'Leave (entry fee is lost)':'Leave mission'}</button></p>`}
+function hint(){const q=M.it[M.i].q,w=q.c.map((_,j)=>j).filter(j=>j!==q.a);M.hid=[w[Math.floor(Math.random()*w.length)]];M.h++;render()}
+function pick(j){if(M.pk!==null)return;const x=M.it[M.i],q=x.q,ok=j===q.a;M.pk=j;
+if(M.rev){if(ok){S.mist=S.mist.filter(k=>k!==x.k);S.gold+=10;S.xp+=15;M.right++;M.log.push(['Mistake corrected',10,15])}else M.w++}
+else{const s=q.s||x.m.sk;S.sk[s]=S.sk[s]||{c:0,t:0};S.sk[s].t++;if(ok){S.sk[s].c++;M.right++}else{M.w++;if(!S.mist.includes(x.k))S.mist.push(x.k)}}
+sv();render()}
+function nxt(){M.i++;M.pk=null;M.hid=[];if(M.i>=M.it.length)finish();else render()}
+function finish(){const m=M.m,add=(g,x,w)=>{S.gold+=g;S.xp+=x;M.log.push([w,g,x])};
+if(!M.rev){const[bg,bx]=R[m.d],perf=M.w===0;
+if(M.mode==='adv'){S.paid[m.id]=1;add(bg,bx,'Mission complete');if(perf)add(15,10,'Perfect accuracy');if(!M.h)add(10,5,'No hints used')}
+else if(M.mode==='hs'){if(perf)add(90,bx,'Challenge won: 90 gold prize');else add(0,Math.round(bx/2),'Challenge lost: 30 gold entry fee kept by the vault')}
+else add(0,Math.round(bx/2),'Practice complete');
+S.done[m.id]=1;S.dn++;m.v.forEach(v=>{if(!S.vocab.some(a=>a[0]===v[0]))S.vocab.push(v)});
+if(S.dn>=2&&!S.dg){S.dg=1;add(30,25,'Daily goal reached')}}
+M.res=1;M.up=lv()>M.lv0;sv();render()}
+function results(){const n=M.it.length;return `<div class="card"><h1>${M.rev?'Review finished':'Mission complete'}</h1><p><b>${M.right} of ${n}</b> correct${M.rev?' this time':M.w===0?'. Perfect reading!':'. Mistakes are saved in your Vault so you can review them.'}</p>
+${M.log.map(r=>`<div class="row"><span>${r[0]}</span><b>${r[1]?'+'+r[1]+' gold ':''}${r[2]?'+'+r[2]+' XP':''}</b></div>`).join('')||'<p class="mut">No rewards this time.</p>'}
+${M.up?`<p style="color:var(--gold);font-weight:800;margin-top:12px">★ Level up! You are now level ${lv()}.</p>`:''}
+${!M.rev&&M.m.v.length?`<p class="mut" style="margin-top:12px">New in your Vault: ${M.m.v.map(v=>v[0]).join(', ')}</p>`:''}</div>
+${S.mist.length?`<button class="btn" onclick="rv()">Review ${S.mist.length} mistake${S.mist.length>1?'s':''}</button>`:''}
+<button class="btn ${S.mist.length?'alt':''}" onclick="M=null;tab='map';render()">Back to map</button><button class="btn alt" onclick="M=null;tab='home';render()">Finish for now</button>`}
+function render(){$.innerHTML=hdr()+(M?(M.res?results():mission()):nav()+({home,map,vault,shop}[tab])());const f=$.querySelector('[data-f]');if(f)f.focus();else if(M&&M.pk===null&&M.i===0)window.scrollTo(0,0)}
+render();
+</script></body></html>
