@@ -54,6 +54,7 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
 .bd{background:#0f2c40;border:1px solid var(--line);border-radius:10px;text-align:center;padding:10px 4px}.bd span{font-size:2rem;display:block}.bd small{color:var(--mut);font-size:.78rem}.bd.ru{opacity:.55;filter:grayscale(1)}
 label{display:block;margin:10px 0 4px;font-weight:600}input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);background:#0f2c40;color:var(--ink);font:inherit}textarea{min-height:90px}
 .card2.up .def{font-size:.82rem;line-height:1.35}.card2 b{font-size:.95rem}.fb p{margin:8px 0 0}details summary{cursor:pointer;margin-bottom:8px}
+.ch.sel{border-color:var(--gold);background:#3a3a1f}.dot{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ink);font:700 .8rem Figtree,sans-serif;cursor:pointer;margin:0 4px 4px 0}.dot.an{background:#1b4f68}.dot.cur{border-color:var(--gold);color:var(--gold)}nav button{font-size:.8rem}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body><div id="app"></div>
 <script>
@@ -71,7 +72,7 @@ const BU=[['class','🏫','Classroom',80],['lib','📚','Library',120],['staff',
 const BO=[['hint','💡','Hint pack (3 hints)',30,3],['shield','🛡️','Shield (saves one heart)',50,1],['time','🐢','Slow-mo (halves speed for one round)',30,1]];
 const GN={match:'Flip & Match',catch:'Word Catch',spell:'Spell the Spell',bridge:'Bridge Builder'};
 const K='wordbound-v2';let S={};try{S=JSON.parse(localStorage.getItem(K))||{}}catch(e){}
-S=Object.assign({xp:0,gold:0,done:{},paid:{},bld:[],inv:{hint:3,shield:1,time:1},weak:[],vocab:[],sk:{},day:'',dn:0,dg:0,custom:[],cat:{}},S);
+S=Object.assign({xp:0,gold:0,done:{},paid:{},bld:[],inv:{hint:3,shield:1,time:1},weak:[],vocab:[],sk:{},day:'',dn:0,dg:0,custom:[],cat:{},ex:[],exd:''},S);
 const td=new Date().toDateString();if(S.day!==td){S.day=td;S.dn=0;S.dg=0}
 const NL=String.fromCharCode(10),ol=t=>(t||'').split(NL).map(s=>s.trim()).filter(Boolean),csv=t=>(t||'').split(',').map(s=>s.trim()).filter(Boolean),esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const SHARED=[];
@@ -84,10 +85,10 @@ let tab='home',M=null,sel=null,pend=null,lo=(nextSt()||ST[0]).l;
 const el=w=>/^[a-z]+$/i.test(w[0]),emo=c=>/^[^\u0000-\u007f]+$/.test(c)&&c.length<7,clueH=c=>emo(c)?`<span class="big">${c}</span>`:`<span class="def">${c}</span>`;
 const lk=s=>{if(s.o)return false;const ss=ST.filter(x=>x.l===s.l&&x.k===s.k),i=ss.indexOf(s);return i>0&&!S.done[ss[i-1].id]};
 const hdr=()=>`<header class="top"><span class="lv">Level ${lv()}</span><div class="xp" role="progressbar" aria-label="XP to next level" aria-valuenow="${S.xp%100}" aria-valuemax="100"><i style="width:${S.xp%100}%"></i></div><span class="gd">🪙 ${S.gold}</span></header>`;
-const nav=()=>`<nav>${[['home','Home'],['map','Levels'],['vault','Vault'],['shop','Shop'],['teach','Author']].map(t=>`<button ${tab===t[0]?'aria-current="page"':''} onclick="tab='${t[0]}';sel=null;render()">${t[1]}</button>`).join('')}</nav>`;
+const nav=()=>`<nav>${[['home','Home'],['map','Levels'],['exam','Exam'],['vault','Vault'],['shop','Shop'],['teach','Author']].map(t=>`<button ${tab===t[0]?'aria-current="page"':''} onclick="tab='${t[0]}';sel=null;render()">${t[1]}</button>`).join('')}</nav>`;
 const vill=()=>`<div class="vil" aria-label="Ashford village">${BU.map(b=>{const o=S.bld.includes(b[0]);return `<div class="bd ${o?'':'ru'}"><span>${o?b[1]:'🧱'}</span><small>${b[2]}${o?'':' (ruins)'}</small></div>`}).join('')}</div>`;
 function home(){const nx=nextSt(),n=ST.filter(s=>S.done[s.id]).length;
-return `<div class="card"><h1>The Ashford academy has lost its teachers.</h1><p>Master the key terms of language teaching, solve classroom cases, and win gold to rebuild the academy.</p>${nx?`<button class="btn" onclick="tab='map';lo=${nx.l};sel='${nx.id}';render()">Continue: ${nx.t}</button>`:'<p><b>Every stage is complete.</b> Replay any stage from Levels.</p>'}<button class="btn alt" onclick="drill()">⚡ Daily drill</button><p class="mut">The daily drill mixes 8 must-know ★★★ terms with any terms you missed. It earns XP but no gold. Every level is open from the start, so begin wherever you like.</p></div>
+return `<div class="card"><h1>The Ashford academy has lost its teachers.</h1><p>Master the key terms of language teaching, solve classroom cases, and win gold to rebuild the academy.</p>${nx?`<button class="btn" onclick="tab='map';lo=${nx.l};sel='${nx.id}';render()">Continue: ${nx.t}</button>`:'<p><b>Every stage is complete.</b> Replay any stage from Levels.</p>'}<button class="btn alt" onclick="drill()">⚡ Daily drill</button><button class="btn alt" onclick="tab='exam';render()">📝 Mock exam</button><p class="mut">The daily drill mixes 8 must-know ★★★ terms with any terms you missed. It earns XP but no gold. Every level is open from the start, so begin wherever you like.</p></div>
 <div class="card"><h3>Daily goal: finish 2 stages today</h3><div class="bar"><i style="width:${Math.min(S.dn,2)*50}%"></i></div><p class="mut">${Math.min(S.dn,2)}/2 done. ${S.dg?'Reward collected: 30 gold and 25 XP.':'Reward: 30 gold and 25 XP.'}</p></div>
 <div class="card"><h3>Rebuild the academy (${S.bld.length}/${BU.length})</h3>${vill()}<p class="mut">${n} of ${ST.length} stages complete. Spend gold in the Shop to restore buildings.</p></div>
 <div class="card"><h3>Your boosts</h3><p class="mut">💡 ${S.inv.hint} hints · 🛡️ ${S.inv.shield} shield · 🐢 ${S.inv.time} slow-mo</p></div>`}
@@ -208,6 +209,40 @@ function tpub(i){const m=S.custom[i];if(!m.pub){const e=chk(m);if(e){msg=e;retur
 function tdel(i){if(pend!=='d'+i){pend='d'+i;return render()}S.custom.splice(i,1);pend=null;rebuild();sv();render()}
 function pv(m){const e=chk(m);if(e){msg=e;return render()}const c=cm(m),it=rounds(c);if(!it.length){msg='Not enough content for any game. Add more words.';return render()}msg='';mk(c,'prev',it)}
 function imp(){const t=document.getElementById('impt').value;try{const a=JSON.parse(t);if(!Array.isArray(a))throw 0;let n=0;a.forEach(m=>{if(m&&m.id&&typeof m.t==='string'&&typeof m.wt==='string'&&!S.custom.some(x=>x.id===m.id)){S.custom.push(Object.assign(nm(),m,{pub:false}));n++}});msg=n+' stage'+(n===1?'':'s')+' imported as drafts.';sv();render()}catch(e){msg='That text is not a valid export.';render()}}
-function render(){$.innerHTML=hdr()+(M?(M.res?results():M.ph==='sum'?rsum():play()):nav()+({home,map,vault,shop,teach}[tab])());const f=$.querySelector('[data-f]');if(f)f.focus();post()}
+/* ---------- mock exam ---------- */
+let X=null;const TK={},TY={def:'Definitions',ex:'Examples',case:'Classroom cases',dist:'Exam distinctions'};CATS.forEach(c=>c.t.forEach(x=>{TK[x[0]]=c.id}));
+const fmt=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+function pickT(n){const out=[],pool=CATS.flatMap(c=>POOL[c.id]);while(out.length<n&&pool.length){let r=Math.random()*pool.reduce((a,x)=>a+x.p,0),i=0;for(;i<pool.length;i++){r-=pool[i].p;if(r<=0)break}out.push(pool.splice(Math.min(i,pool.length-1),1)[0])}return out}
+function qx(x){const o=shuf(POOL[x.k].filter(y=>y.t!==x.t)).slice(0,2).map(y=>y.t);let ty='def',q=x.d+'<br>This describes ___.';try{const re=new RegExp('\\b'+rxe(x.t)+'\\b','i');if(x.e&&re.test(x.e)&&Math.random()<.4){ty='ex';q='“'+x.e.replace(re,'___')+'”<br>Which term fits the blank?'}}catch(e){}return{s:q,c:shuf([x.t,...o]),a:x.t,x:'<b>'+x.t+'</b>: '+x.d+(x.e?'<br><i>Example: '+x.e+'</i>':''),k:x.k,ty}}
+function startX(n){const f=n===40,qi=g=>({s:g[0],c:shuf(g.slice(1,4)),a:g[1],x:g[4]}),
+cs=shuf(ST.filter(s=>s.k==='cases').flatMap(s=>s.g)).slice(0,f?8:4).map(g=>({...qi(g),k:TK[g[1]]||'cases',ty:'case'})),
+ds=shuf(ST.filter(s=>s.k==='dist').flatMap(s=>s.g)).slice(0,f?6:3).map(g=>({...qi(g),k:'dist',ty:'dist'}));
+const dur=f?1800:900;X={q:shuf([...pickT(f?26:13).map(qx),...cs,...ds]),i:0,a:[],dur,t0:Date.now(),left:dur,done:0,cf:0,qc:0};X.iv=setInterval(xt,1000);render()}
+function xt(){if(!X||X.done)return;X.left=Math.max(0,Math.ceil((X.t0+X.dur*1000-Date.now())/1000));const e=document.getElementById('xt');if(e)e.textContent=fmt(X.left);if(X.left<=0)finishX()}
+function xa(j){X.a[X.i]=j;X.cf=0;render()}
+function xg(d){X.i+=d;X.cf=0;render()}
+function xj(i){X.i=i;X.cf=0;render()}
+function xf(){const un=X.q.length-X.a.filter(v=>v!=null).length;if(un&&!X.cf){X.cf=1;return render()}finishX()}
+function xq(){if(!X.qc){X.qc=1;return render()}clearInterval(X.iv);X=null;render()}
+function xview(){if(X.done)return xres();const q=X.q[X.i],a=X.a[X.i],un=X.q.length-X.a.filter(v=>v!=null).length;
+return `<div class="hud"><span class="mut">Mock exam · Question ${X.i+1} of ${X.q.length}</span><span class="st" id="xt" aria-label="Time left">${fmt(X.left)}</span></div><div class="bar"><i style="width:${(X.q.length-un)/X.q.length*100}%"></i></div>
+<div style="margin-bottom:8px">${X.q.map((_,i)=>`<button class="dot ${i===X.i?'cur':''} ${X.a[i]!=null?'an':''}" aria-label="Question ${i+1}${X.a[i]!=null?', answered':''}" onclick="xj(${i})">${i+1}</button>`).join('')}</div>
+<div class="scroll">${q.s.replace('___','<span class="blank">＿＿＿</span>')}</div>${q.c.map((c,j)=>`<button class="ch ${a===j?'sel':''}" onclick="xa(${j})">${L[j]}. ${c}</button>`).join('')}
+${X.cf?`<div class="fb no" role="status">${un} question${un>1?'s are':' is'} unanswered. Tap Submit again to finish anyway.</div>`:''}
+<p>${X.i>0?'<button class="btn alt" onclick="xg(-1)">Back</button>':''}${X.i<X.q.length-1?'<button class="btn" onclick="xg(1)">Next</button>':''}<button class="btn ${X.i<X.q.length-1?'alt':''}" onclick="xf()">Submit exam</button></p><p><button class="btn alt" onclick="xq()">${X.qc?'Confirm: quit without scoring':'Quit exam'}</button></p>`}
+function finishX(){clearInterval(X.iv);const n=X.q.length,ar={},ty={};let c=0;
+X.q.forEach((q,i)=>{const ok=X.a[i]!=null&&q.c[X.a[i]]===q.a;q.ok=ok;if(ok)c++;const A=ar[q.k]=ar[q.k]||{c:0,t:0};A.t++;if(ok)A.c++;const T=ty[q.ty]=ty[q.ty]||{c:0,t:0};T.t++;if(ok)T.c++;const s=S.cat[q.k]=S.cat[q.k]||{c:0,t:0};s.t++;if(ok)s.c++;const k=S.sk.Application=S.sk.Application||{c:0,t:0};k.t++;if(ok)k.c++;
+ if(!ok&&TK[q.a]){const t=POOL[TK[q.a]].find(x=>x.t===q.a);if(t&&!S.weak.some(w=>w[0]===t.t))S.weak.push([t.t,t.d])}});
+const pct=Math.round(c/n*100),sec=Math.min(X.dur,Math.round((Date.now()-X.t0)/1000)),pass=pct>=70,xp=c*2;S.xp+=xp;let g=0;if(pass&&S.exd!==td){S.exd=td;g=30;S.gold+=30}
+S.ex=(S.ex||[]).concat([{d:new Date().toLocaleDateString(),n,c,p:pct,s:sec}]).slice(-10);Object.assign(X,{done:1,c,pct,sec,pass,xp,g,ar,ty});sv();render()}
+function xres(){const x=X,w=x.q.filter(q=>!q.ok),bars=o=>Object.keys(o).sort((a,b)=>o[a].c/o[a].t-o[b].c/o[b].t).map(k=>{const a=o[k],p=Math.round(a.c/a.t*100);return `<div class="row" style="border:0"><span>${KN[k]||TY[k]||k}</span><span class="mut">${p}% · ${a.c}/${a.t}</span></div><div class="bar"><i style="width:${p}%"></i></div>`}).join('');
+return `<div class="card"><h1>${x.pass?'You passed!':'Keep practising'}</h1><p style="font-size:1.4rem"><b>${x.c} / ${x.q.length}</b> · ${x.pct}%</p><p class="mut">Pass mark: 70%. Time used: ${fmt(x.sec)} of ${fmt(x.dur)}. +${x.xp} XP${x.g?' and +'+x.g+' gold for your first pass today':''}.</p></div>
+<div class="card"><h3>By area (weakest first)</h3>${bars(x.ar)}</div><div class="card"><h3>By question type</h3>${bars(x.ty)}</div>
+<div class="card"><h3>Review your mistakes (${w.length})</h3>${w.length?w.map(q=>{const i=x.q.indexOf(q),ch=x.a[i]!=null?q.c[x.a[i]]:null;return `<div class="fb no"><p>${q.s.replace('___','<b>'+q.a+'</b>')}</p><p><b>Your answer:</b> ${ch||'No answer'}</p>${q.x||''}${ch&&DEF[ch]?`<p><b>${ch}</b>: ${DEF[ch][0]}</p>`:''}</div>`}).join(''):'<p>No mistakes. Excellent!</p>'}${w.length?'<p class="mut">The related terms were added to your Vault for review.</p>':''}</div>
+<button class="btn" onclick="X=null;render()">Back to Exam</button><button class="btn alt" onclick="X=null;tab='vault';render()">Open Vault</button>`}
+function examTab(){const h=S.ex||[],best=h.length?Math.max(...h.map(e=>e.p)):0;
+return `<div class="card"><h2>Mock exam</h2><p>Mixed questions from every level: definitions, examples, classroom cases and exam distinctions. ★★★ terms appear most often. There are no hints, no hearts and no feedback until you submit.</p><p class="mut">Full exam: 40 questions, 30 minutes. Quick exam: 20 questions, 15 minutes. Pass mark: 70%. Your answers are not saved if you leave the page mid-exam.</p><button class="btn" onclick="startX(40)">Start full exam (40)</button><button class="btn alt" onclick="startX(20)">Quick exam (20)</button></div>
+<div class="card"><h3>Your attempts</h3>${h.length?`<p class="mut">Best score: ${best}%</p>`+h.slice().reverse().map(e=>`<div class="row"><span>${e.d} · ${e.c}/${e.n} · ${fmt(e.s)}</span><b>${e.p}% ${e.p>=70?'✓':''}</b></div>`).join(''):'<p class="mut">No attempts yet.</p>'}</div>`}
+function render(){$.innerHTML=hdr()+(M?(M.res?results():M.ph==='sum'?rsum():play()):X?xview():nav()+({home,map,exam:examTab,vault,shop,teach}[tab])());const f=$.querySelector('[data-f]');if(f)f.focus();post()}
 render();
 </script></body></html>
