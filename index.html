@@ -112,7 +112,7 @@ function mk(s,mode,it){M={s,mode,it,i:0,ok:0,no:0,h:0,st:0,bs:0,sh:0,mx:mode==='
 function go(id,mode){const s=ST.find(x=>x.id===id);if(mode==='hs')S.gold-=30;sv();mk(s,mode,rounds(s))}
 function rv(){if(!S.weak.length)return;const s={t:'Review',id:'review',k:'review',l:0,w:S.weak.slice(),g:[],c:null},it=[];if(s.w.length>=3)it.push({t:'match'});if(s.w.some(el))it.push({t:'spell'});if(it.length)mk(s,'rev',it)}
 function rs(){clearTimeout(M.tm);cancelAnimationFrame(M.raf);const t=M.it[M.i].t,s=M.s;M.ph='play';M.slow=0;
-if(t==='match'){const lg=s.w.reduce((a,w)=>a+w[1].length,0)/s.w.length>25,p=shuf(s.w).slice(0,lg?4:6);M.r={cols:lg?2:3,cards:shuf(p.flatMap((x,i)=>[{i,k:'w',x:x[0],w:x[0]},{i,k:'c',x:x[1],w:x[0]}])),fl:[],mt:[],mm:0,lock:0,pk:0,ok:0,no:0}}
+if(t==='match'){const lg=s.w.reduce((a,w)=>a+w[1].length,0)/s.w.length>25,p=shuf(s.w).slice(0,lg?4:6);M.r={cols:lg?2:3,cards:shuf(p.flatMap((x,i)=>[{i,k:'w',x:x[0],w:x[0]},{i,k:'c',x:x[1],w:x[0]}])),fl:[],mt:[],mm:0,lock:0,pe:0,ok:0,no:0}}
 else if(t==='catch'){M.r={q:shuf([...s.c[2].slice(0,5).map(w=>({w,s:'A'})),...s.c[3].slice(0,5).map(w=>({w,s:'B'}))]),act:[],cd:0,fz:0,spn:0,ok:0,no:0}}
 else if(t==='spell'){M.r={ws:shuf(s.w.filter(el)).slice(0,3),k:0,dn:0,ok:0,no:0};sw()}
 else M.r={it:s.g.length>=3?shuf(s.g).slice(0,5).map(g=>({s:g[0],c:shuf(g.slice(1,4)),a:g[1],x:g[4]})):gen(s),k:0,res:[],dn:0,hid:[],pk:-1,pl:0,ok:0,no:0}}
@@ -126,11 +126,11 @@ const hudH=()=>`<span class="mut">${M.rev?'Review':M.s.t} · ${M.i+1}/${M.it.len
 function uh(){const e=document.getElementById('hud');if(e)e.innerHTML=hudH()}
 function endRound(){clearTimeout(M.tm);cancelAnimationFrame(M.raf);M.ph='sum';sv();render()}
 function nr(){if(M.hp<=0&&!np()){M.out=1;return finish()}M.i++;if(M.i>=M.it.length)return finish();rs();render()}
-const hintBtn=()=>S.inv.hint>0?`<button id="hb" class="btn alt" onclick="hint()">💡 ${{match:'Peek',catch:'Freeze',spell:'Letter',bridge:'50/50'}[M.it[M.i].t]} (${S.inv.hint})</button>`:'';
+const hintBtn=()=>S.inv.hint>0?`<button id="hb" class="btn alt" onclick="hint()">💡 ${{match:'Match one',catch:'Freeze',spell:'Letter',bridge:'50/50'}[M.it[M.i].t]} (${S.inv.hint})</button>`:'';
 const slowBtn=()=>S.inv.time>0&&!M.slow&&M.it[M.i].t!=='match'?`<button id="sb" class="btn alt" onclick="sm()">🐢 Slow-mo (${S.inv.time})</button>`:'';
 const bo=()=>M.mode==='hs'?'':hintBtn()+slowBtn();
-function pMatch(){const r=M.r;return `<p class="mut">Find each word and its meaning.</p><div class="grid" style="grid-template-columns:repeat(${r.cols},1fr)">${r.cards.map((c,j)=>{const m=r.mt.includes(c.i),up=m||r.fl.includes(j)||r.pk;return `<button class="card2 ${up?'up':''} ${m?'mt':''}" ${up||r.lock?'disabled':''} onclick="mf(${j})" aria-label="${up?esc(c.x):'Hidden card'}">${up?(c.k==='c'?clueH(c.x):`<b>${c.x}</b>`):'?'}</button>`}).join('')}</div>${bo()}`}
-function mf(j){const r=M.r;if(r.lock||r.fl.includes(j)||r.mt.includes(r.cards[j].i))return;r.fl.push(j);const c=M;
+function pMatch(){const r=M.r;return `<p class="mut">Find each word and its meaning. Tap a face-up card again to hide it. 👀 Peeks: ${r.pe}</p><div class="grid" style="grid-template-columns:repeat(${r.cols},1fr)">${r.cards.map((c,j)=>{const m=r.mt.includes(c.i),up=m||r.fl.includes(j);return `<button class="card2 ${up?'up':''} ${m?'mt':''}" ${m||r.lock?'disabled':''} onclick="mf(${j})" aria-label="${up?esc(c.x):'Hidden card'}">${up?(c.k==='c'?clueH(c.x):`<b>${c.x}</b>`):'?'}</button>`}).join('')}</div>${bo()}`}
+function mf(j){const r=M.r;if(r.lock||r.mt.includes(r.cards[j].i))return;if(r.fl.includes(j)){r.fl=r.fl.filter(x=>x!==j);r.pe++;return render()}r.fl.push(j);const c=M;
 if(r.fl.length===2){const[a,b]=r.fl.map(x=>r.cards[x]);
  if(a.i===b.i){r.mt.push(a.i);r.fl=[];good('Terminology');render();if(r.mt.length===r.cards.length/2)setTimeout(()=>{if(alive(c)&&c.r===r)endRound()},800);return}
  r.lock=1;r.mm++;miss('Terminology',[a.w,b.w],r.mm%3===0);render();setTimeout(()=>{if(alive(c)&&c.r===r){r.fl=[];r.lock=0;if(M.hp<=0&&!np())return endRound();render()}},800);return}
@@ -162,7 +162,7 @@ return `<div class="bridge"><span class="hero" id="hero" style="left:${r.pl}%">�
 function bp(j){const r=M.r;if(r.dn)return;r.dn=1;clearTimeout(M.tm);const it=r.it[r.k],ok=j>=0&&it.c[j]===it.a;r.pk=j;r.res[r.k]=ok?1:0;if(ok)good('Application');else miss('Application',[it.a],true);render()}
 function bn(){const r=M.r;if(!r.dn)return;if((M.hp<=0&&!np())||r.k>=r.it.length-1)return endRound();r.k++;r.dn=0;r.hid=[];r.pk=-1;r.tmOn=0;render()}
 function hint(){if(S.inv.hint<1||M.ph!=='play')return;const t=M.it[M.i].t,r=M.r;
-if(t==='match'){if(r.pk)return;S.inv.hint--;M.h++;r.pk=1;sv();render();const c=M;setTimeout(()=>{if(alive(c)&&c.r===r){r.pk=0;render()}},1500);return}
+if(t==='match'){const u=[...new Set(r.cards.map(c=>c.i))].filter(i=>!r.mt.includes(i));if(!u.length)return;S.inv.hint--;M.h++;r.mt.push(u[0]);r.fl=[];sv();render();if(r.mt.length===r.cards.length/2){const c=M;setTimeout(()=>{if(alive(c)&&c.r===r)endRound()},800)}return}
 if(t==='catch'){S.inv.hint--;M.h++;r.fz=performance.now()+3000;sv();const b=document.getElementById('hb');if(b){if(S.inv.hint>0)b.textContent='💡 Freeze ('+S.inv.hint+')';else b.remove()}return}
 if(t==='spell'){if(r.fin)return;S.inv.hint--;M.h++;const w=r.ws[r.k][0].toLowerCase(),e=w[r.used.length],j=r.ts.findIndex((x,i)=>!r.used.includes(i)&&x.toLowerCase()===e);r.used.push(j);sv();if(r.used.length===w.length)return solved();return render()}
 if(t==='bridge'){if(r.dn||r.hid.length)return;S.inv.hint--;M.h++;const it=r.it[r.k];r.hid=[it.c.findIndex(c=>c!==it.a)];sv();render()}}
@@ -172,7 +172,7 @@ if(t==='catch'&&!r.on){r.on=1;loopC()}
 if(t==='spell'&&!r.tmOn&&!r.fin){r.tmOn=1;const k=r.k,d=(22+r.ws[k][0].length*2.5)*(M.slow?2:1);M.tm=setTimeout(()=>{if(alive(c)&&c.r===r&&r.k===k&&!r.fin)timeS()},d*1000)}
 if(t==='bridge'&&!r.tmOn&&!r.dn){r.tmOn=1;const k=r.k;M.tm=setTimeout(()=>{if(alive(c)&&c.r===r&&r.k===k&&!r.dn)bp(-1)},bt(r.it[k])*1000);const hr=document.getElementById('hero'),p=r.k/r.it.length*100;if(hr)requestAnimationFrame(()=>{hr.style.left=p+'%';r.pl=p})}}
 function play(){return `<div class="hud" id="hud">${hudH()}</div><div class="bar"><i style="width:${M.i/M.it.length*100}%"></i></div>`+({match:pMatch,catch:pCatch,spell:pSpell,bridge:pBridge}[M.it[M.i].t])()+`<p><button class="btn alt" onclick="clearTimeout(M.tm);cancelAnimationFrame(M.raf);M=null;tab='${M.mode==='prev'?'teach':'map'}';render()">${M.mode==='hs'?'Leave (entry fee is lost)':'Leave'}</button></p>`}
-function rsum(){const r=M.r,last=M.i===M.it.length-1,dead=M.hp<=0&&!np();return `<div class="hud" id="hud">${hudH()}</div><div class="card"><h2>${dead?'Out of hearts':GN[M.it[M.i].t]+' complete'}</h2><p><b>${r.ok} right</b>, ${r.no} mistake${r.no===1?'':'s'} · 🔥 streak ${M.st}</p></div><button class="btn" data-f onclick="nr()">${last||dead?'See results':'Next game'}</button>`}
+function rsum(){const r=M.r,last=M.i===M.it.length-1,dead=M.hp<=0&&!np();return `<div class="hud" id="hud">${hudH()}</div><div class="card"><h2>${dead?'Out of hearts':GN[M.it[M.i].t]+' complete'}</h2><p><b>${r.ok} right</b>, ${r.no} mistake${r.no===1?'':'s'} · 🔥 streak ${M.st}${r.pe!=null?` · 👀 ${r.pe} peek${r.pe===1?'':'s'}`:''}</p></div><button class="btn" data-f onclick="nr()">${last||dead?'See results':'Next game'}</button>`}
 function finish(){clearTimeout(M.tm);cancelAnimationFrame(M.raf);if(M.mode==='prev'){M.res=1;return render()}const s=M.s,add=(g,x,w)=>{S.gold+=g;S.xp+=x;M.log.push([w,g,x])};
 if(!M.rev){const[bg,bx]=R[s.l],perf=M.no===0;
 if(M.out){if(M.mode==='hs')M.log.push(['Challenge lost: the 30 gold entry fee is gone',0,0]);M.log.push(['No rewards this time',0,0])}
